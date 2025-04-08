@@ -46,7 +46,37 @@ public class bank {
         }
 
         public void run() {
-            
+            try {
+                transaction = new Random().nextBoolean() ? "Deposit" : "Withdraw";
+                Thread.sleep(new Random().nextInt(101));
+                bankOpen.acquire(); bankOpen.release(); // Wait for bank to open
+
+                door.acquire();
+                System.out.println("Customer " + id + " [Customer " + id + "]: enters the bank");
+
+                synchronized (lock) {
+                    customerQueue.add(this);
+                    lock.notifyAll();
+                }
+
+                tellerReady.acquire();
+                System.out.println("Customer " + id + " [Teller " + assignedTeller.id + "]: selects teller");
+                System.out.println("Customer " + id + " [Teller " + assignedTeller.id + "]: introduces themselves");
+                System.out.println("Customer " + id + " [Teller " + assignedTeller.id + "]: requests a " + transaction);
+                assignedTeller.customerReady.release();
+
+                assignedTeller.transactionDone.acquire();
+                System.out.println("Customer " + id + " [Teller " + assignedTeller.id + "]: transaction done");
+                System.out.println("Customer " + id + " [Teller " + assignedTeller.id + "]: leaves teller");
+                assignedTeller.customerLeft.release();
+
+                System.out.println("Customer " + id + " [Customer " + id + "]: exits the bank");
+                door.release();
+
+            } catch (InterruptedException e) {
+                System.err.println("Customer " + id + " interrupted");
+            }
+        }
         }
     }
     
