@@ -27,3 +27,7 @@
 - Waits for the teller to complete the transaction with assignedTeller.transactionDone.acquire()
 - Logs completion and releases the teller using assignedTeller.customerLeft.release()
 - Finally, exits the bank and releases the door semaphore
+
+# 4/9/2025 12:00PM
+- Plan to try to finish the project 
+- Implement Teller class and main 
